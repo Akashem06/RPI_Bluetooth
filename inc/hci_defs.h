@@ -137,24 +137,24 @@ typedef enum {
 } Adv_Type;
 
 typedef enum {
-    ADV_OWN_ADDR_PUBLIC,                        /** Public Device Address */
-    ADV_OWN_ADDR_RANDOM,                        /** Random Device Address */
+    ADV_OWN_ADDR_PUBLIC,                    /** Public Device Address */
+    ADV_OWN_ADDR_RANDOM,                    /** Random Device Address */
 } Adv_OwnAddressType;
 
 typedef enum {
-    ADV_DIR_ADDR_PUBLIC,                        /** Public Device Address */
-    ADV_DIR_ADDR_RANDOM,                        /** Random Device Address */
+    ADV_DIR_ADDR_PUBLIC,                    /** Public Device Address */
+    ADV_DIR_ADDR_RANDOM,                    /** Random Device Address */
 } Adv_DirectAddressType;
 
 typedef enum {
-    ADV_CHANNEL_37 = 0x01,                      /** Channel 37 enabled */
-    ADV_CHANNEL_38 = 0x02,                      /** Channel 38 enabled */
-    ADV_CHANNEL_39 = 0x04,                      /** Channel 39 enabled */
+    ADV_CHANNEL_37 = 0x01,                  /** Channel 37 enabled */
+    ADV_CHANNEL_38 = 0x02,                  /** Channel 38 enabled */
+    ADV_CHANNEL_39 = 0x04,                  /** Channel 39 enabled */
 } Adv_ChannelMap;
 
 typedef enum {
-    ADV_FILTER_POLICY_ALLOW_ALL = 0x00,         /** Accept all connections */
-    ADV_FILTER_POLICY_ALLOW_SCAN = 0x01,        /** Accept scan requests, but not connections */
-    ADV_FILTER_POLICY_ALLOW_CONN = 0x02,        /** Accept connection requests, but not scans */
-    ADV_FILTER_POLICY_ALLOW_NONE = 0x03,        /** Reject all scan and connection requests */
+    ADV_FILTER_POLICY_ALLOW_ALL,            /** Accept all connections */
+    ADV_FILTER_POLICY_ALLOW_SCAN,           /** Accept scan requests, but not connections */
+    ADV_FILTER_POLICY_ALLOW_CONN,           /** Accept connection requests, but not scans */
+    ADV_FILTER_POLICY_ALLOW_NONE,           /** Reject all scan and connection requests */
 } Adv_FilterPolicy;
