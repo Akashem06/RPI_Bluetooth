@@ -43,7 +43,7 @@ typedef struct {
         HCI_CommandOpCode bit;
         uint16_t          raw;
     } op_code;
-    uint8_t  paramter_length;
+    uint8_t  parameter_length;
     uint8_t  *parameters;
 } HCICommand;
 
@@ -65,47 +65,125 @@ typedef struct {
     uint8_t  *parameters;
 } HCIEvent;
 
-typedef struct {
-    uint8_t *data;
-    uint32_t size;
-} BCM4345_FirmwareChunk;
-
-typedef struct {
-    const char *path;
-    BCM4345_FirmwareChunk *chunks;
-    uint32_t chunk_count;
-} BCM4345_FirmwareData;
-
+/**
+ * @brief
+ * @return
+ */
 HCI_Error HCI_init(void);
+
+/**
+ * @brief
+ * @return
+ */
 HCI_Error HCI_reset(void);
 
+/**
+ * @brief
+ * @return
+ */
+int HCI_encode_packet(HCIPacket packet_type, void *packet_data, uint8_t *buffer, uint16_t buffer_size);
+
+/**
+ * @brief
+ * @return
+ */
+HCI_Error HCI_decode_packet(uint8_t *buffer, uint16_t buffer_size, uint8_t *packet_type, void *packet_data);
+
+/**
+ * @brief
+ * @return
+ */
 HCI_Error HCI_send_command(HCICommand *cmd);
-void HCI_handle_event(HCIEvent *event);
 
+/**
+ * @brief
+ * @return
+ */
 HCI_Error HCI_send_async_data(HCIAsyncData *data);
-void HCI_handle_async_data(HCIAsyncData *data);
 
-int HCI_BLE_set_advertising_param(uint16_t adv_interval_min, uint16_t adv_interval_max, uint8_t adv_type);
-int HCI_BLE_set_advertising_data(uint8_t *adv_data);
-int HCI_BLE_set_scan_parameters(uint8_t scan_type, uint16_t scan_interval, uint16_t scan_window);
+/**
+ * @brief
+ * @details
+ * @return
+ */
+HCI_Error HCI_BLE_set_advertising_param(uint16_t adv_interval_min, uint16_t adv_interval_max, 
+                                    Adv_Type adv_type, Adv_OwnAddressType own_address_type,
+                                    Adv_DirectAddressType direct_address_type, uint8_t *direct_address,
+                                    Adv_ChannelMap adv_channel_map, Adv_FilterPolicy adv_filter_policy);
+
+/**
+ * @brief
+ * @details
+ * @return
+ */
+HCI_Error HCI_BLE_set_advertising_data(uint8_t *adv_data, uint8_t adv_data_len);
+
+/**
+ * @brief
+ * @details
+ * @return
+ */
+int HCI_BLE_set_scan_parameters(uint8_t scan_type, uint16_t scan_interval, uint16_t scan_window,
+                             uint8_t own_address_type, uint8_t scanning_filter_policy);
+
+/**
+ * @brief
+ * @details
+ * @return
+ */
 int HCI_BLE_create_connection(uint16_t scan_interval, uint16_t scan_window, uint8_t *peer_address);
 
-int HCI_encode_packet(HCIPacket packet_type, void *packet_data, uint8_t *buffer, uint16_t buffer_size);
-HCI_Error HCI_decode_packet(uint8_t *buffer, uint16_t buffer_size, uint8_t *packet_type, void *packet_data);
+
+/**
+ * @brief
+ */
+void HCI_handle_async_data(HCIAsyncData *data);
+
+/**
+ * @brief
+ */
 void HCI_handle_error(uint8_t error_code);
 
+/**
+ * @brief
+ */
+void HCI_handle_event(HCIEvent *event);
+
+/**
+ * @brief
+ */
 void HCI_handle_command_complete_event(uint8_t *parameters, uint8_t parameter_length);
+
+/**
+ * @brief
+ */
 void HCI_handle_command_status_event(uint8_t *parameters, uint8_t parameter_length);
 
-void HCI_handle_BLE_meta_event(HCI_SubEventCode *sub_event);
-void HCI_handle_disconnection_complete_event(uint8_t status, uint16_t connection_handle, uint8_t reason);
-
+/**
+ * @brief
+ * @return
+ */
 HCIState HCI_get_state(void);
+
+/**
+ * @brief
+ */
 void HCI_set_state(HCIState new_state);
 
-int HCI_bcm4345_load_firmware();
-int HCI_send_firmware_chunk(BCM4345_FirmwareChunk *chunk);
-BCM4345_FirmwareData *HCI_read_firmware_file(const char *firmware_path);
+/**
+ * @brief
+ * @return
+ */
+HCI_Error HCI_bcm4345_load_firmware();
 
-int HCI_bcm4345_set_baudrate(uint32_t baudrate);
-int HCI_bcm4345_set_bt_addr(BCM4345_FirmwareChunk *chunk);
+/**
+ * @brief
+ * @return
+ */
+HCI_Error HCI_bcm4345_set_baudrate(uint32_t baudrate);
+
+/**
+ * @brief
+ * @return
+ */
+HCI_Error HCI_set_bt_addr(uint8_t *bt_addr);
