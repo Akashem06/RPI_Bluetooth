@@ -13,6 +13,7 @@ typedef enum {
     CMD_BT_SET_EVENT_MASK_PAGE_2                                    = 0x0C63,
     CMD_BT_READ_AUTHENTICATED_PAYLOAD_TIMEOUT                       = 0x0C7B,
     CMD_BT_WRITE_AUTHENTICATED_PAYLOAD_TIMEOUT                      = 0x0C7C,
+    CMD_BT_WRITE_LOCAL_NAME                                         = 0x0C13,
     CMD_BT_READ_LOCAL_VERSION_INFORMATION                           = 0x1001,
     CMD_BT_READ_LOCAL_SUPPORTED_COMMANDS                            = 0x1002,
     CMD_BT_READ_LOCAL_SUPPORTED_FEATURES                            = 0x1003,
@@ -158,3 +159,65 @@ typedef enum {
     ADV_FILTER_POLICY_ALLOW_CONN,           /** Accept connection requests, but not scans */
     ADV_FILTER_POLICY_ALLOW_NONE,           /** Reject all scan and connection requests */
 } Adv_FilterPolicy;
+
+/***************************************************************************************
+ * Scanning defs
+ **************************************************************************************/
+
+typedef enum {
+    SCAN_PASSIVE,
+    SCAN_ACTIVE
+} Scan_Type;
+
+typedef enum {
+    SCAN_PUBLIC_DEVICE_ADDR,
+    SCAN_RANDOM_DEVICE_ADDR,
+    SCAN_PUBLIC_IDENTITY_ADDR,
+    SCAN_RANDOM_IDENTITY_ADDR
+} Scan_OwnAddressType;
+
+typedef enum {
+    SCAN_ACCEPT_ALL,
+    SCAN_WHITELIST_ONLY,
+} Scan_FilterPolicy;
+
+/***************************************************************************************
+ * Connection defs
+ **************************************************************************************/
+
+typedef enum {
+    CONN_INITIATOR_FILTER_LIST_NOT_USED,
+    CONN_INITIATOR_FILTER_LIST_USED
+} Conn_InitiatorFilterPolicy;
+
+typedef enum {
+    CONN_PEER_PUBLIC_DEVICE_ADDRESS,
+    CONN_PEER_RANDOM_DEVICE_ADDRESS,
+    CONN_PEER_PUBLIC_IDENTITY_ADDRESS,
+    CONN_PEER_RANDOM_IDENTITY_ADDRESS
+} Conn_PeerAddressType;
+
+typedef enum {
+    CONN_OWN_PUBLIC_DEVICE_ADDRESS,
+    CONN_OWN_RANDOM_DEVICE_ADDRESS,
+    CONN_OWN_RESOLVABLE_PRIVATE_ADDRESS,
+    CONN_OWN_NON_RESOLVABLE_PRIVATE_ADDRESS
+} Conn_OwnAddressType;
+
+typedef enum {
+    CONN_DISCONNECT_AUTHENTICATION_FAILURE     = 0x05,
+    CONN_DISCONNECT_REMOTE_USER_TERMINATED     = 0x13,
+    CONN_DISCONNECT_REMOTE_DEVICE_TERMINATED   = 0x14,
+    CONN_DISCONNECT_SUPERVISION_TIMEOUT        = 0x08,
+    CONN_DISCONNECT_CONNECTION_TIMEOUT         = 0x22
+} Conn_DisconnectReason;
+
+/***************************************************************************************
+ * Hardware RX defs
+ **************************************************************************************/
+typedef enum {
+    HW_RX_STATE_WAIT_TYPE,
+    HW_RX_STATE_WAIT_EVENT_HEADER,
+    HW_RX_STATE_WAIT_ASYNC_HEADER,
+    HW_RX_STATE_WAIT_PAYLOAD,
+} HW_RXState;
