@@ -5,3 +5,6 @@ This repo will hold the firmware used for my host layer.
 #### Helpful resources:
 https://docs.nordicsemi.com/bundle/ncs-2.2.0/page/zephyr/connectivity/bluetooth/bluetooth-arch.html
 https://software-dl.ti.com/lprf/simplelink_cc2640r2_latest/docs/blestack/ble_user_guide/html/ble-stack-3.x/hci.html
+
+### TODO:
+Finish disconnect/connect sequences. Impelment L2CAP layer. Validate GAP/GATT Layers.

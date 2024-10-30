@@ -31,7 +31,7 @@ typedef enum {
     HCI_ERROR_BUSY,
     HCI_ERROR_UNSUPPORTED_VERSION,
     HCI_ERROR_UNKNOWN_PACKET_TYPE
-} HCI_Error;
+} HCIError;
 
 typedef struct {
     union {
@@ -75,13 +75,13 @@ typedef struct  {
  * @brief
  * @return
  */
-HCI_Error HCI_init(void);
+HCIError HCI_init(void);
 
 /**
  * @brief
  * @return
  */
-HCI_Error HCI_reset(void);
+HCIError HCI_reset(void);
 
 /**
  * @brief
@@ -93,26 +93,26 @@ int HCI_encode_packet(HCIPacket packet_type, void *packet_data, uint8_t *buffer,
  * @brief
  * @return
  */
-HCI_Error HCI_decode_packet(uint8_t *buffer, uint16_t buffer_size, uint8_t *packet_type, void *packet_data);
+HCIError HCI_decode_packet(uint8_t *buffer, uint16_t buffer_size, uint8_t *packet_type, void *packet_data);
 
 /**
  * @brief
  * @return
  */
-HCI_Error HCI_send_command(HCICommand *cmd);
+HCIError HCI_send_command(HCICommand *cmd);
 
 /**
  * @brief
  * @return
  */
-HCI_Error HCI_send_async_data(HCIAsyncData *data);
+HCIError HCI_send_async_data(HCIAsyncData *data);
 
 /**
  * @brief
  * @details
  * @return
  */
-HCI_Error HCI_BLE_set_advertising_param(uint16_t adv_interval_min, uint16_t adv_interval_max, 
+HCIError HCI_BLE_set_advertising_param(uint16_t adv_interval_min, uint16_t adv_interval_max, 
                                     Adv_Type adv_type, Adv_OwnAddressType own_address_type,
                                     Adv_DirectAddressType direct_address_type, uint8_t *direct_address,
                                     Adv_ChannelMap adv_channel_map, Adv_FilterPolicy adv_filter_policy);
@@ -122,7 +122,7 @@ HCI_Error HCI_BLE_set_advertising_param(uint16_t adv_interval_min, uint16_t adv_
  * @details
  * @return
  */
-HCI_Error HCI_BLE_set_advertising_data(uint8_t *adv_data, uint8_t adv_data_len);
+HCIError HCI_BLE_set_advertising_data(uint8_t *adv_data, uint8_t adv_data_len);
 
 
 /**
@@ -130,14 +130,14 @@ HCI_Error HCI_BLE_set_advertising_data(uint8_t *adv_data, uint8_t adv_data_len);
  * @details
  * @return
  */
-HCI_Error HCI_BLE_set_advertising_enable(bool enable);
+HCIError HCI_BLE_set_advertising_enable(bool enable);
 
 /**
  * @brief
  * @details
  * @return
  */
-HCI_Error HCI_BLE_set_scan_parameters(Scan_Type scan_type, uint16_t scan_interval, uint16_t scan_window,
+HCIError HCI_BLE_set_scan_parameters(Scan_Type scan_type, uint16_t scan_interval, uint16_t scan_window,
                                    Scan_OwnAddressType own_address_type, Scan_FilterPolicy scanning_filter_policy);
 
 /**
@@ -145,14 +145,14 @@ HCI_Error HCI_BLE_set_scan_parameters(Scan_Type scan_type, uint16_t scan_interva
  * @details
  * @return
  */
-HCI_Error HCI_BLE_set_scan_enable(bool enable, bool filter_duplicates);
+HCIError HCI_BLE_set_scan_enable(bool enable, bool filter_duplicates);
 
 /**
  * @brief
  * @details
  * @return
  */
-HCI_Error HCI_BLE_create_connection(uint16_t scan_interval_ms, uint16_t scan_window_ms,
+HCIError HCI_BLE_create_connection(uint16_t scan_interval_ms, uint16_t scan_window_ms,
                                    Conn_InitiatorFilterPolicy filter_policy,
                                    Conn_PeerAddressType peer_address_type, uint8_t *peer_address,
                                    Conn_OwnAddressType own_address_type,
@@ -164,7 +164,7 @@ HCI_Error HCI_BLE_create_connection(uint16_t scan_interval_ms, uint16_t scan_win
  * @details
  * @return
  */
-HCI_Error HCI_BLE_connection_update(uint16_t connection_handle,
+HCIError HCI_BLE_connection_update(uint16_t connection_handle,
                                    uint16_t conn_interval_min_ms, uint16_t conn_interval_max_ms,
                                    uint16_t conn_latency, uint16_t supervision_timeout_ms);
 
@@ -173,21 +173,21 @@ HCI_Error HCI_BLE_connection_update(uint16_t connection_handle,
  * @details
  * @return
  */
-HCI_Error HCI_disconnect(uint16_t connection_handle, Conn_DisconnectReason reason);
+HCIError HCI_disconnect(uint16_t connection_handle, Conn_DisconnectReason reason);
 
 /**
  * @brief
  * @details
  * @return
  */
-HCI_Error HCI_BLE_set_event_mask(uint8_t mask);
+HCIError HCI_BLE_set_event_mask(uint8_t mask);
 
 /**
  * @brief
  * @details
  * @return
  */
-HCI_Error HCI_set_local_name(const char* name);
+HCIError HCI_set_local_name(const char* name);
 
 /**
  * @brief
@@ -254,25 +254,25 @@ void HCI_set_state(HCIState new_state);
  * @brief
  * @return
  */
-HCI_Error HCI_bcm4345_load_firmware();
+HCIError HCI_bcm4345_load_firmware();
 
 /**
  * @brief
  * @return
  */
-HCI_Error HCI_bcm4345_set_baudrate(uint32_t baudrate);
+HCIError HCI_bcm4345_set_baudrate(uint32_t baudrate);
 
 /**
  * @brief
  * @return
  */
-HCI_Error HCI_set_bt_addr(uint8_t *bt_addr);
+HCIError HCI_set_bt_addr(uint8_t *bt_addr);
 
 /**
  * @brief
  * @return
  */
-HCI_Error HCI_get_bt_addr(uint8_t *bt_addr);
+HCIError HCI_get_bt_addr(uint8_t *bt_addr);
 
 
 /**
@@ -292,7 +292,7 @@ uint8_t HCI_buffer_space();
  * @param
  * @return
  */
-HCI_Error HCI_parse_event(uint8_t *data, uint16_t length);
+HCIError HCI_parse_event(uint8_t *data, uint16_t length);
 
 
 /**
@@ -300,7 +300,7 @@ HCI_Error HCI_parse_event(uint8_t *data, uint16_t length);
  * @param
  * @return
  */
-HCI_Error HCI_get_module_status(BCM4345C0Info *info);
+HCIError HCI_get_module_status(BCM4345C0Info *info);
 
 /**
  * @brief

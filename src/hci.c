@@ -86,7 +86,7 @@ int HCI_encode_packet(HCIPacket packet_type, void *packet_data, uint8_t *buffer,
     return encoded_length;
 }
 
-HCI_Error HCI_decode_packet(uint8_t *buffer, uint16_t buffer_size, uint8_t *packet_type, void *packet_data) {
+HCIError HCI_decode_packet(uint8_t *buffer, uint16_t buffer_size, uint8_t *packet_type, void *packet_data) {
     if (buffer_size < 1) {
         return HCI_ERROR_INVALID_PARAMETERS;
     }
@@ -181,7 +181,7 @@ void HCI_handle_error(uint8_t error_code) {
 /***************************************************************************************
  * HCI command and data transmission
  **************************************************************************************/
-HCI_Error HCI_send_command(HCICommand *cmd) {
+HCIError HCI_send_command(HCICommand *cmd) {
     uint8_t packet[MAX_PACKET_SIZE];
     uint16_t packet_len = HCI_encode_packet(HCI_COMMAND_PACKET, cmd, packet, sizeof(packet));
     if (packet_len == 0) {
@@ -193,7 +193,7 @@ HCI_Error HCI_send_command(HCICommand *cmd) {
     return HCI_ERROR_SUCCESS;
 }
 
-HCI_Error HCI_send_async_data(HCIAsyncData *data) {
+HCIError HCI_send_async_data(HCIAsyncData *data) {
     uint8_t packet[MAX_PACKET_SIZE];
     uint16_t packet_len = HCI_encode_packet(HCI_ASYNC_DATA_PACKET, data, packet, sizeof(packet));
 
@@ -444,7 +444,7 @@ uint8_t HCI_buffer_space() {
  * Advertising handling
  **************************************************************************************/
 
-HCI_Error HCI_BLE_set_advertising_param(uint16_t adv_interval_min, uint16_t adv_interval_max, 
+HCIError HCI_BLE_set_advertising_param(uint16_t adv_interval_min, uint16_t adv_interval_max, 
                                         Adv_Type adv_type, Adv_OwnAddressType own_address_type,
                                         Adv_DirectAddressType direct_address_type, uint8_t *direct_address,
                                         Adv_ChannelMap adv_channel_map, Adv_FilterPolicy adv_filter_policy) {
@@ -473,7 +473,7 @@ HCI_Error HCI_BLE_set_advertising_param(uint16_t adv_interval_min, uint16_t adv_
         .parameters = adv_params
     };
     
-    HCI_Error status = HCI_send_command(&cmd);
+    HCIError status = HCI_send_command(&cmd);
     if (status != HCI_ERROR_SUCCESS) {
         return status;
     }
@@ -482,7 +482,7 @@ HCI_Error HCI_BLE_set_advertising_param(uint16_t adv_interval_min, uint16_t adv_
     return status;
 }
 
-HCI_Error HCI_BLE_set_advertising_data(uint8_t *adv_data, uint8_t adv_data_len) {
+HCIError HCI_BLE_set_advertising_data(uint8_t *adv_data, uint8_t adv_data_len) {
 
     /* Data goes out of scope when function returns unless declared as a static variable. */
     static uint8_t data[32] = {0};
@@ -495,7 +495,7 @@ HCI_Error HCI_BLE_set_advertising_data(uint8_t *adv_data, uint8_t adv_data_len) 
         .parameters = data
     };
     
-    HCI_Error status = HCI_send_command(&cmd);
+    HCIError status = HCI_send_command(&cmd);
     if (status != HCI_ERROR_SUCCESS) {
         return status;
     }
@@ -504,14 +504,14 @@ HCI_Error HCI_BLE_set_advertising_data(uint8_t *adv_data, uint8_t adv_data_len) 
     return status;
 }
 
-HCI_Error HCI_BLE_set_advertising_enable(bool enable) {
+HCIError HCI_BLE_set_advertising_enable(bool enable) {
     HCICommand adv_enable_cmd = {
             .op_code.raw = CMD_BLE_SET_ADVERTISE_ENABLE,
             .parameter_length = 1,
             .parameters = (uint8_t *){&enable}
         };
 
-    HCI_Error status = HCI_send_command(&adv_enable_cmd);
+    HCIError status = HCI_send_command(&adv_enable_cmd);
     if (status != HCI_ERROR_SUCCESS) {
         return status;
     }
@@ -524,7 +524,7 @@ HCI_Error HCI_BLE_set_advertising_enable(bool enable) {
  * Scanning handling
  **************************************************************************************/
 
-HCI_Error HCI_BLE_set_scan_parameters(Scan_Type scan_type, uint16_t scan_interval_ms, uint16_t scan_window_ms,
+HCIError HCI_BLE_set_scan_parameters(Scan_Type scan_type, uint16_t scan_interval_ms, uint16_t scan_window_ms,
                                    Scan_OwnAddressType own_address_type, Scan_FilterPolicy scanning_filter_policy) {
     /* Convert milliseconds to bluetooth units. */
     uint16_t scan_interval = (uint16_t)((scan_interval_ms * 16) / 10);
@@ -545,7 +545,7 @@ HCI_Error HCI_BLE_set_scan_parameters(Scan_Type scan_type, uint16_t scan_interva
         .parameters = params
     };
     
-    HCI_Error status = HCI_send_command(&cmd);
+    HCIError status = HCI_send_command(&cmd);
     if (status != HCI_ERROR_SUCCESS) {
         return status;
     }
@@ -554,7 +554,7 @@ HCI_Error HCI_BLE_set_scan_parameters(Scan_Type scan_type, uint16_t scan_interva
     return status;
 }
 
-HCI_Error HCI_BLE_set_scan_enable(bool enable, bool filter_duplicates) {
+HCIError HCI_BLE_set_scan_enable(bool enable, bool filter_duplicates) {
     uint8_t params[2];
     params[0] = enable ? 0x01 : 0x00;
     params[1] = filter_duplicates ? 0x01 : 0x00;
@@ -565,7 +565,7 @@ HCI_Error HCI_BLE_set_scan_enable(bool enable, bool filter_duplicates) {
         .parameters = params
     };
     
-    HCI_Error status = HCI_send_command(&cmd);
+    HCIError status = HCI_send_command(&cmd);
     if (status != HCI_ERROR_SUCCESS) {
         return status;
     }
@@ -578,7 +578,7 @@ HCI_Error HCI_BLE_set_scan_enable(bool enable, bool filter_duplicates) {
  * Connection handling
  **************************************************************************************/
 
-HCI_Error HCI_BLE_create_connection(uint16_t scan_interval_ms, uint16_t scan_window_ms,
+HCIError HCI_BLE_create_connection(uint16_t scan_interval_ms, uint16_t scan_window_ms,
                                    Conn_InitiatorFilterPolicy filter_policy,
                                    Conn_PeerAddressType peer_address_type, uint8_t *peer_address,
                                    Conn_OwnAddressType own_address_type,
@@ -613,7 +613,7 @@ HCI_Error HCI_BLE_create_connection(uint16_t scan_interval_ms, uint16_t scan_win
         .parameters = params
     };
     
-    HCI_Error status = HCI_send_command(&cmd);
+    HCIError status = HCI_send_command(&cmd);
     if (status != HCI_ERROR_SUCCESS) {
         return status;
     }
@@ -622,7 +622,7 @@ HCI_Error HCI_BLE_create_connection(uint16_t scan_interval_ms, uint16_t scan_win
     return status;
 }
 
-HCI_Error HCI_BLE_connection_update(uint16_t connection_handle,
+HCIError HCI_BLE_connection_update(uint16_t connection_handle,
                                    uint16_t conn_interval_min_ms, uint16_t conn_interval_max_ms,
                                    uint16_t conn_latency, uint16_t supervision_timeout_ms) {
     
@@ -646,7 +646,7 @@ HCI_Error HCI_BLE_connection_update(uint16_t connection_handle,
         .parameters = params
     };
     
-    HCI_Error status = HCI_send_command(&cmd);
+    HCIError status = HCI_send_command(&cmd);
     if (status != HCI_ERROR_SUCCESS) {
         return status;
     }
@@ -655,7 +655,7 @@ HCI_Error HCI_BLE_connection_update(uint16_t connection_handle,
     return status;
 }
 
-HCI_Error HCI_disconnect(uint16_t connection_handle, Conn_DisconnectReason reason) {
+HCIError HCI_disconnect(uint16_t connection_handle, Conn_DisconnectReason reason) {
     uint8_t params[3];
     params[0] = connection_handle & 0xFF;
     params[1] = (connection_handle >> 8) & 0xFF;
@@ -667,7 +667,7 @@ HCI_Error HCI_disconnect(uint16_t connection_handle, Conn_DisconnectReason reaso
         .parameters = params
     };
     
-    HCI_Error status = HCI_send_command(&cmd);
+    HCIError status = HCI_send_command(&cmd);
     if (status != HCI_ERROR_SUCCESS) {
         return status;
     }
@@ -680,7 +680,7 @@ HCI_Error HCI_disconnect(uint16_t connection_handle, Conn_DisconnectReason reaso
  * Set Event Mask
  **************************************************************************************/
 
-HCI_Error HCI_BLE_set_event_mask(uint8_t mask) {
+HCIError HCI_BLE_set_event_mask(uint8_t mask) {
     uint8_t params[8] = {mask, 0, 0, 0, 0, 0, 0, 0};
     
     HCICommand cmd = {
@@ -689,7 +689,7 @@ HCI_Error HCI_BLE_set_event_mask(uint8_t mask) {
         .parameters = params
     };
 
-    HCI_Error status = HCI_send_command(&cmd);
+    HCIError status = HCI_send_command(&cmd);
     if (status != HCI_ERROR_SUCCESS) {
         return status;
     }
@@ -702,7 +702,7 @@ HCI_Error HCI_BLE_set_event_mask(uint8_t mask) {
  * Set name
  **************************************************************************************/
 
-HCI_Error HCI_set_local_name(const char* name) {
+HCIError HCI_set_local_name(const char* name) {
     static uint8_t params[248] = {0};
     
     size_t name_len = 0;
@@ -719,7 +719,7 @@ HCI_Error HCI_set_local_name(const char* name) {
         .parameters = params
     };
 
-    HCI_Error status = HCI_send_command(&cmd);
+    HCIError status = HCI_send_command(&cmd);
     if (status != HCI_ERROR_SUCCESS) {
         return status;
     }
@@ -745,7 +745,7 @@ HCI_Error HCI_set_local_name(const char* name) {
  * BCM4345 firmware handling
  **************************************************************************************/
 
-HCI_Error HCI_bcm4345_load_firmware(void) {
+HCIError HCI_bcm4345_load_firmware(void) {
     const uint32_t CHUNK_DELAY_MS = 1;
     const uint32_t FIRMWARE_BOOT_DELAY_MS = 250;
 
@@ -756,7 +756,7 @@ HCI_Error HCI_bcm4345_load_firmware(void) {
     };
 
     // Send minidriver and wait for response
-    HCI_Error status = HCI_send_command(&cmd);
+    HCIError status = HCI_send_command(&cmd);
     if (status != HCI_ERROR_SUCCESS) {
         return status;
     }
@@ -814,7 +814,7 @@ HCI_Error HCI_bcm4345_load_firmware(void) {
     return status;
 }
 
-HCI_Error HCI_bcm4345_set_baudrate(uint32_t baudrate) {
+HCIError HCI_bcm4345_set_baudrate(uint32_t baudrate) {
     uint8_t params[6];
     params[0] = baudrate & 0xFF;
     params[1] = (baudrate >> 8) & 0xFF;
@@ -829,7 +829,7 @@ HCI_Error HCI_bcm4345_set_baudrate(uint32_t baudrate) {
         .parameters = params
     };
 
-    HCI_Error status =  HCI_send_command(&cmd);
+    HCIError status =  HCI_send_command(&cmd);
     if (status != HCI_ERROR_SUCCESS) {
         return status;
     }
@@ -842,7 +842,7 @@ HCI_Error HCI_bcm4345_set_baudrate(uint32_t baudrate) {
  * BCM435C0 Status
  **************************************************************************************/
 
-HCI_Error HCI_get_module_status(BCM4345C0Info *info) {
+HCIError HCI_get_module_status(BCM4345C0Info *info) {
     if (info == NULL) {
         return HCI_ERROR_INVALID_PARAMETERS;
     }
@@ -853,7 +853,7 @@ HCI_Error HCI_get_module_status(BCM4345C0Info *info) {
         .parameters = NULL
     };
 
-    HCI_Error status =  HCI_send_command(&cmd);
+    HCIError status =  HCI_send_command(&cmd);
     if (status != HCI_ERROR_SUCCESS) {
         return status;
     }
@@ -885,7 +885,7 @@ void HCI_print_module_status(BCM4345C0Info *info) {
  * Bluetooth Address Setters/Getters
  **************************************************************************************/
 
-HCI_Error HCI_set_bt_addr(uint8_t *bt_addr) {
+HCIError HCI_set_bt_addr(uint8_t *bt_addr) {
     if (bt_addr == NULL) {
         return HCI_ERROR_INVALID_PARAMETERS;
     }
@@ -901,7 +901,7 @@ HCI_Error HCI_set_bt_addr(uint8_t *bt_addr) {
         .parameters = reversed_bt_addr
     };
 
-    HCI_Error status =  HCI_send_command(&cmd);
+    HCIError status =  HCI_send_command(&cmd);
     if (status != HCI_ERROR_SUCCESS) {
         return status;
     }
@@ -910,7 +910,7 @@ HCI_Error HCI_set_bt_addr(uint8_t *bt_addr) {
     return status;
 }
 
-HCI_Error HCI_get_bt_addr(uint8_t *bt_addr) {
+HCIError HCI_get_bt_addr(uint8_t *bt_addr) {
     if (bt_addr == NULL) {
         return HCI_ERROR_INVALID_PARAMETERS;
     }
@@ -921,7 +921,7 @@ HCI_Error HCI_get_bt_addr(uint8_t *bt_addr) {
         .parameters = NULL
     };
 
-    HCI_Error status =  HCI_send_command(&cmd);
+    HCIError status =  HCI_send_command(&cmd);
     if (status != HCI_ERROR_SUCCESS) {
         return status;
     }
@@ -937,8 +937,8 @@ HCI_Error HCI_get_bt_addr(uint8_t *bt_addr) {
  * Bluetooth Init/Reset
  **************************************************************************************/
 
-HCI_Error HCI_init(void) {
-    HCI_Error status;
+HCIError HCI_init(void) {
+    HCIError status;
     hw_init();
 
     status = HCI_reset();
@@ -963,14 +963,14 @@ HCI_Error HCI_init(void) {
     return status;
 }
 
-HCI_Error HCI_reset(void) {
+HCIError HCI_reset(void) {
     HCICommand reset_command = {
         .op_code.raw = CMD_BT_RESET,
         .parameter_length = 0U,
         .parameters = NULL,
     };
 
-    HCI_Error status = HCI_send_command(&reset_command);
+    HCIError status = HCI_send_command(&reset_command);
     waiting_response = true;
     while(hci_state != HCI_STATE_ON);
     return status;
