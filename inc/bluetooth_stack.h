@@ -2,14 +2,12 @@
 
 #include <stdint.h>
 
-#include "hardware.h"
-#include "hci.h"
 #include "gap.h"
-
-#define MAX_PACKET_SIZE 256
+#include "hardware_bl.h"
+#include "hci.h"
 
 typedef struct {
-    uint8_t addr[6];
+  uint8_t addr[6];
 } BluetoothAddress;
 
 void bluetooth_stack_init(void);

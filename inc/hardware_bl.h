@@ -1,7 +1,8 @@
 #pragma once
 
-#include "bluetooth_stack.h"
 #include <stdbool.h>
+
+#include "bluetooth_stack.h"
 
 void hw_init(void);
 
