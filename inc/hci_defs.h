@@ -182,10 +182,7 @@ typedef enum {
  * Connection defs
  **************************************************************************************/
 
-typedef enum {
-  CONN_INITIATOR_FILTER_LIST_NOT_USED,
-  CONN_INITIATOR_FILTER_LIST_USED
-} Conn_InitiatorFilterPolicy;
+typedef enum { CONN_INITIATOR_FILTER_LIST_NOT_USED, CONN_INITIATOR_FILTER_LIST_USED } Conn_InitiatorFilterPolicy;
 
 typedef enum {
   CONN_PEER_PUBLIC_DEVICE_ADDRESS,

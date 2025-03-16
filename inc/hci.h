@@ -94,8 +94,7 @@ HCIError HCI_reset(void);
  * @return  int Number of bytes written to the buffer, or an error code
  * @details Converts an HCI packet into a byte stream suitable for transmission
  */
-int HCI_encode_packet(HCIPacket packet_type, void *packet_data, uint8_t *buffer,
-                      uint16_t buffer_size);
+int HCI_encode_packet(HCIPacket packet_type, void *packet_data, uint8_t *buffer, uint16_t buffer_size);
 
 /**
  * @brief   Decode an HCI packet from a buffer
@@ -106,8 +105,7 @@ int HCI_encode_packet(HCIPacket packet_type, void *packet_data, uint8_t *buffer,
  * @return  HCIError Indicates the success or failure of the decoding process
  * @details Converts a byte stream back into an HCI packet structure
  */
-HCIError HCI_decode_packet(uint8_t *buffer, uint16_t buffer_size, uint8_t *packet_type,
-                           void *packet_data);
+HCIError HCI_decode_packet(uint8_t *buffer, uint16_t buffer_size, uint8_t *packet_type, void *packet_data);
 
 /**
  * @brief   Send an HCI command to the Bluetooth controller
@@ -138,9 +136,8 @@ HCIError HCI_send_async_data(HCIAsyncData *data);
  * @return  HCIError Indicates the success or failure of setting advertising parameters
  * @details Configures the detailed parameters for BLE advertising
  */
-HCIError HCI_BLE_set_advertising_param(uint16_t adv_interval_min, uint16_t adv_interval_max,
-                                       Adv_Type adv_type, Adv_OwnAddressType own_address_type,
-                                       Adv_DirectAddressType direct_address_type,
+HCIError HCI_BLE_set_advertising_param(uint16_t adv_interval_min, uint16_t adv_interval_max, Adv_Type adv_type,
+                                       Adv_OwnAddressType own_address_type, Adv_DirectAddressType direct_address_type,
                                        uint8_t *direct_address, Adv_ChannelMap adv_channel_map,
                                        Adv_FilterPolicy adv_filter_policy);
 
@@ -171,9 +168,8 @@ HCIError HCI_BLE_set_advertising_enable(bool enable);
  * @return  HCIError Indicates the success or failure of setting scan parameters
  * @details Sets up the detailed configuration for BLE device scanning
  */
-HCIError HCI_BLE_set_scan_parameters(Scan_Type scan_type, uint16_t scan_interval,
-                                     uint16_t scan_window, Scan_OwnAddressType own_address_type,
-                                     Scan_FilterPolicy scanning_filter_policy);
+HCIError HCI_BLE_set_scan_parameters(Scan_Type scan_type, uint16_t scan_interval, uint16_t scan_window,
+                                     Scan_OwnAddressType own_address_type, Scan_FilterPolicy scanning_filter_policy);
 
 /**
  * @brief   Enable or disable BLE scanning
@@ -200,11 +196,10 @@ HCIError HCI_BLE_set_scan_enable(bool enable, bool filter_duplicates);
  * @details Establishes a new BLE connection with specified parameters
  */
 HCIError HCI_BLE_create_connection(uint16_t scan_interval_ms, uint16_t scan_window_ms,
-                                   Conn_InitiatorFilterPolicy filter_policy,
-                                   Conn_PeerAddressType peer_address_type, uint8_t *peer_address,
-                                   Conn_OwnAddressType own_address_type,
-                                   uint16_t conn_interval_min_ms, uint16_t conn_interval_max_ms,
-                                   uint16_t conn_latency, uint16_t supervision_timeout_ms);
+                                   Conn_InitiatorFilterPolicy filter_policy, Conn_PeerAddressType peer_address_type,
+                                   uint8_t *peer_address, Conn_OwnAddressType own_address_type,
+                                   uint16_t conn_interval_min_ms, uint16_t conn_interval_max_ms, uint16_t conn_latency,
+                                   uint16_t supervision_timeout_ms);
 
 /**
  * @brief   Update parameters of an existing BLE connection
@@ -216,9 +211,8 @@ HCIError HCI_BLE_create_connection(uint16_t scan_interval_ms, uint16_t scan_wind
  * @return  HCIError Indicates the success or failure of updating the connection
  * @details Modifies the parameters of an active BLE connection
  */
-HCIError HCI_BLE_connection_update(uint16_t connection_handle, uint16_t conn_interval_min_ms,
-                                   uint16_t conn_interval_max_ms, uint16_t conn_latency,
-                                   uint16_t supervision_timeout_ms);
+HCIError HCI_BLE_connection_update(uint16_t connection_handle, uint16_t conn_interval_min_ms, uint16_t conn_interval_max_ms,
+                                   uint16_t conn_latency, uint16_t supervision_timeout_ms);
 
 /**
  * @brief   Terminate an active Bluetooth connection
@@ -313,8 +307,7 @@ void HCI_handle_BLE_connection_complete(uint8_t *subevent_parameters, uint8_t su
  * @details Processes notifications when a BLE connection's parameters are updated
  */
 
-void HCI_handle_BLE_connection_update_complete(uint8_t *subevent_parameters,
-                                               uint8_t subevent_length);
+void HCI_handle_BLE_connection_update_complete(uint8_t *subevent_parameters, uint8_t subevent_length);
 
 /**
  * @brief   Handle BLE enhanced connection complete events
@@ -322,8 +315,7 @@ void HCI_handle_BLE_connection_update_complete(uint8_t *subevent_parameters,
  * @param   subevent_length Length of the subevent parameters
  * @details Processes advanced BLE connection completion notifications
  */
-void HCI_handle_BLE_enhanced_connection_complete(uint8_t *subevent_parameters,
-                                                 uint8_t subevent_length);
+void HCI_handle_BLE_enhanced_connection_complete(uint8_t *subevent_parameters, uint8_t subevent_length);
 
 /**
  * @brief   Retrieve the current HCI layer state

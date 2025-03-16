@@ -11,9 +11,7 @@ void hw_delay_ms(uint32_t ms);
 
 /* BEGIN USER DEFINED VARIABLES */
 
-UartSettings bt_settings = {
-  .uart = UART0, .cts = 30, .rts = 31, .tx = 32, .rx = 33, .bluetooth = true
-};
+UartSettings bt_settings = { .uart = UART0, .cts = 30, .rts = 31, .tx = 32, .rx = 33, .bluetooth = true };
 
 /* END USER DEFIEND VARIABLES */
 

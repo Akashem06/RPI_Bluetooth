@@ -53,8 +53,7 @@ void HCI_set_state(HCIState new_state) {
 /***************************************************************************************
  * Packet serialization
  **************************************************************************************/
-int HCI_encode_packet(HCIPacket packet_type, void *packet_data, uint8_t *buffer,
-                      uint16_t buffer_size) {
+int HCI_encode_packet(HCIPacket packet_type, void *packet_data, uint8_t *buffer, uint16_t buffer_size) {
   uint16_t encoded_length = 0U;
 
   switch (packet_type) {
@@ -80,8 +79,7 @@ int HCI_encode_packet(HCIPacket packet_type, void *packet_data, uint8_t *buffer,
       }
       buffer[0] = packet_type;
       buffer[1] = acl->connection_handle & 0xFF;
-      buffer[2] =
-          ((acl->connection_handle >> 8) & 0x0F) | (acl->pb_flag << 4) | (acl->bc_flag << 6);
+      buffer[2] = ((acl->connection_handle >> 8) & 0x0F) | (acl->pb_flag << 4) | (acl->bc_flag << 6);
       buffer[3] = acl->data_total_length & 0xFF;
       buffer[4] = (acl->data_total_length >> 8) & 0xFF;
       memcpy(&buffer[5], acl->data, acl->data_total_length);
@@ -94,8 +92,7 @@ int HCI_encode_packet(HCIPacket packet_type, void *packet_data, uint8_t *buffer,
   return encoded_length;
 }
 
-HCIError HCI_decode_packet(uint8_t *buffer, uint16_t buffer_size, uint8_t *packet_type,
-                           void *packet_data) {
+HCIError HCI_decode_packet(uint8_t *buffer, uint16_t buffer_size, uint8_t *packet_type, void *packet_data) {
   if (buffer_size < 1) {
     return HCI_ERROR_INVALID_PARAMETERS;
   }
@@ -330,14 +327,12 @@ void HCI_handle_BLE_connection_complete(uint8_t *subevent_parameters, uint8_t su
   (void)subevent_length;
 }
 
-void HCI_handle_BLE_connection_update_complete(uint8_t *subevent_parameters,
-                                               uint8_t subevent_length) {
+void HCI_handle_BLE_connection_update_complete(uint8_t *subevent_parameters, uint8_t subevent_length) {
   (void)subevent_parameters;
   (void)subevent_length;
 }
 
-void HCI_handle_BLE_enhanced_connection_complete(uint8_t *subevent_parameters,
-                                                 uint8_t subevent_length) {
+void HCI_handle_BLE_enhanced_connection_complete(uint8_t *subevent_parameters, uint8_t subevent_length) {
   (void)subevent_parameters;
   (void)subevent_length;
 }
@@ -429,8 +424,7 @@ void HCI_handle_hw_rx(uint8_t byte) {
                              .parameters = &rx_buffer[3] };
           HCI_handle_event(&event);
         } else if (rx_buffer[0] == HCI_ASYNC_DATA_PACKET) {
-          HCIAsyncData async_data = { .connection_handle =
-                                          (rx_buffer[1] & 0xFF) | ((rx_buffer[2] << 8) & 0x0F),
+          HCIAsyncData async_data = { .connection_handle = (rx_buffer[1] & 0xFF) | ((rx_buffer[2] << 8) & 0x0F),
                                       .pb_flag = (rx_buffer[2] >> 4) & 0x03,
                                       .bc_flag = (rx_buffer[2] >> 6) & 0x03,
                                       .data_total_length = rx_buffer[3] | (rx_buffer[4] << 8),
@@ -457,9 +451,8 @@ uint8_t HCI_buffer_space() {
  * Advertising handling
  **************************************************************************************/
 
-HCIError HCI_BLE_set_advertising_param(uint16_t adv_interval_min, uint16_t adv_interval_max,
-                                       Adv_Type adv_type, Adv_OwnAddressType own_address_type,
-                                       Adv_DirectAddressType direct_address_type,
+HCIError HCI_BLE_set_advertising_param(uint16_t adv_interval_min, uint16_t adv_interval_max, Adv_Type adv_type,
+                                       Adv_OwnAddressType own_address_type, Adv_DirectAddressType direct_address_type,
                                        uint8_t *direct_address, Adv_ChannelMap adv_channel_map,
                                        Adv_FilterPolicy adv_filter_policy) {
   if (direct_address == NULL) {
@@ -473,8 +466,8 @@ HCIError HCI_BLE_set_advertising_param(uint16_t adv_interval_min, uint16_t adv_i
                              (uint8_t)((adv_interval_min >> 8) & 0xFF),
                              (uint8_t)(adv_interval_max & 0xFF),
                              (uint8_t)((adv_interval_max >> 8) & 0xFF),
-                             adv_type,         /* Advertising type: Connectable, non-connectable. */
-                             own_address_type, /* Own address type. */
+                             adv_type,            /* Advertising type: Connectable, non-connectable. */
+                             own_address_type,    /* Own address type. */
                              direct_address_type, /* Direct address type. */
                              direct_address[0],
                              direct_address[1],
@@ -504,9 +497,7 @@ HCIError HCI_BLE_set_advertising_data(uint8_t *adv_data, uint8_t adv_data_len) {
   data[0] = adv_data_len;
   memcpy(&data[1], adv_data, adv_data_len);
 
-  HCICommand cmd = { .op_code.raw = CMD_BLE_SET_ADVERTISING_DATA,
-                     .parameter_length = sizeof(data),
-                     .parameters = data };
+  HCICommand cmd = { .op_code.raw = CMD_BLE_SET_ADVERTISING_DATA, .parameter_length = sizeof(data), .parameters = data };
 
   HCIError status = HCI_send_command(&cmd);
   if (status != HCI_ERROR_SUCCESS) {
@@ -536,9 +527,8 @@ HCIError HCI_BLE_set_advertising_enable(bool enable) {
  * Scanning handling
  **************************************************************************************/
 
-HCIError HCI_BLE_set_scan_parameters(Scan_Type scan_type, uint16_t scan_interval_ms,
-                                     uint16_t scan_window_ms, Scan_OwnAddressType own_address_type,
-                                     Scan_FilterPolicy scanning_filter_policy) {
+HCIError HCI_BLE_set_scan_parameters(Scan_Type scan_type, uint16_t scan_interval_ms, uint16_t scan_window_ms,
+                                     Scan_OwnAddressType own_address_type, Scan_FilterPolicy scanning_filter_policy) {
   /* Convert milliseconds to bluetooth units. */
   uint16_t scan_interval = (uint16_t)((scan_interval_ms * 16) / 10);
   uint16_t scan_window = (uint16_t)((scan_window_ms * 16) / 10);
@@ -552,9 +542,7 @@ HCIError HCI_BLE_set_scan_parameters(Scan_Type scan_type, uint16_t scan_interval
   params[5] = own_address_type;
   params[6] = scanning_filter_policy;
 
-  HCICommand cmd = { .op_code.raw = CMD_BLE_SET_SCAN_PARAMETERS,
-                     .parameter_length = sizeof(params),
-                     .parameters = params };
+  HCICommand cmd = { .op_code.raw = CMD_BLE_SET_SCAN_PARAMETERS, .parameter_length = sizeof(params), .parameters = params };
 
   HCIError status = HCI_send_command(&cmd);
   if (status != HCI_ERROR_SUCCESS) {
@@ -570,9 +558,7 @@ HCIError HCI_BLE_set_scan_enable(bool enable, bool filter_duplicates) {
   params[0] = enable ? 0x01 : 0x00;
   params[1] = filter_duplicates ? 0x01 : 0x00;
 
-  HCICommand cmd = { .op_code.raw = CMD_BLE_SET_SCAN_ENABLE,
-                     .parameter_length = sizeof(params),
-                     .parameters = params };
+  HCICommand cmd = { .op_code.raw = CMD_BLE_SET_SCAN_ENABLE, .parameter_length = sizeof(params), .parameters = params };
 
   HCIError status = HCI_send_command(&cmd);
   if (status != HCI_ERROR_SUCCESS) {
@@ -588,11 +574,10 @@ HCIError HCI_BLE_set_scan_enable(bool enable, bool filter_duplicates) {
  **************************************************************************************/
 
 HCIError HCI_BLE_create_connection(uint16_t scan_interval_ms, uint16_t scan_window_ms,
-                                   Conn_InitiatorFilterPolicy filter_policy,
-                                   Conn_PeerAddressType peer_address_type, uint8_t *peer_address,
-                                   Conn_OwnAddressType own_address_type,
-                                   uint16_t conn_interval_min_ms, uint16_t conn_interval_max_ms,
-                                   uint16_t conn_latency, uint16_t supervision_timeout_ms) {
+                                   Conn_InitiatorFilterPolicy filter_policy, Conn_PeerAddressType peer_address_type,
+                                   uint8_t *peer_address, Conn_OwnAddressType own_address_type,
+                                   uint16_t conn_interval_min_ms, uint16_t conn_interval_max_ms, uint16_t conn_latency,
+                                   uint16_t supervision_timeout_ms) {
   /* Convert milliseconds to bluetooth units */
   uint16_t scan_interval = (uint16_t)((scan_interval_ms * 16) / 10);
   uint16_t scan_window = (uint16_t)((scan_window_ms * 16) / 10);
@@ -627,9 +612,7 @@ HCIError HCI_BLE_create_connection(uint16_t scan_interval_ms, uint16_t scan_wind
     0x00 /* Maximum CE length */
   };
 
-  HCICommand cmd = { .op_code.raw = CMD_BLE_CREATE_CONNECTION,
-                     .parameter_length = sizeof(params),
-                     .parameters = params };
+  HCICommand cmd = { .op_code.raw = CMD_BLE_CREATE_CONNECTION, .parameter_length = sizeof(params), .parameters = params };
 
   HCIError status = HCI_send_command(&cmd);
   if (status != HCI_ERROR_SUCCESS) {
@@ -640,9 +623,8 @@ HCIError HCI_BLE_create_connection(uint16_t scan_interval_ms, uint16_t scan_wind
   return status;
 }
 
-HCIError HCI_BLE_connection_update(uint16_t connection_handle, uint16_t conn_interval_min_ms,
-                                   uint16_t conn_interval_max_ms, uint16_t conn_latency,
-                                   uint16_t supervision_timeout_ms) {
+HCIError HCI_BLE_connection_update(uint16_t connection_handle, uint16_t conn_interval_min_ms, uint16_t conn_interval_max_ms,
+                                   uint16_t conn_latency, uint16_t supervision_timeout_ms) {
   /* Convert milliseconds to bluetooth units */
   uint16_t conn_interval_min = (uint16_t)((conn_interval_min_ms * 16) / 10);
   uint16_t conn_interval_max = (uint16_t)((conn_interval_max_ms * 16) / 10);
@@ -664,9 +646,7 @@ HCIError HCI_BLE_connection_update(uint16_t connection_handle, uint16_t conn_int
     0x00 /* Maximum CE length */
   };
 
-  HCICommand cmd = { .op_code.raw = CMD_BLE_CONNECTION_UPDATE,
-                     .parameter_length = sizeof(params),
-                     .parameters = params };
+  HCICommand cmd = { .op_code.raw = CMD_BLE_CONNECTION_UPDATE, .parameter_length = sizeof(params), .parameters = params };
 
   HCIError status = HCI_send_command(&cmd);
   if (status != HCI_ERROR_SUCCESS) {
@@ -683,9 +663,7 @@ HCIError HCI_disconnect(uint16_t connection_handle, Conn_DisconnectReason reason
   params[1] = (connection_handle >> 8) & 0xFF;
   params[2] = reason;
 
-  HCICommand cmd = { .op_code.raw = CMD_BT_DISCONNECT,
-                     .parameter_length = sizeof(params),
-                     .parameters = params };
+  HCICommand cmd = { .op_code.raw = CMD_BT_DISCONNECT, .parameter_length = sizeof(params), .parameters = params };
 
   HCIError status = HCI_send_command(&cmd);
   if (status != HCI_ERROR_SUCCESS) {
@@ -703,9 +681,7 @@ HCIError HCI_disconnect(uint16_t connection_handle, Conn_DisconnectReason reason
 HCIError HCI_BLE_set_event_mask(uint8_t mask) {
   uint8_t params[8] = { mask, 0, 0, 0, 0, 0, 0, 0 };
 
-  HCICommand cmd = { .op_code.raw = CMD_BLE_SET_EVENT_MASK,
-                     .parameter_length = sizeof(params),
-                     .parameters = params };
+  HCICommand cmd = { .op_code.raw = CMD_BLE_SET_EVENT_MASK, .parameter_length = sizeof(params), .parameters = params };
 
   HCIError status = HCI_send_command(&cmd);
   if (status != HCI_ERROR_SUCCESS) {
@@ -731,9 +707,7 @@ HCIError HCI_set_local_name(const char *name) {
   memcpy(params, name, name_len);
   memset(params + name_len, 0U, 248 - name_len);
 
-  HCICommand cmd = { .op_code.raw = CMD_BT_WRITE_LOCAL_NAME,
-                     .parameter_length = sizeof(params),
-                     .parameters = params };
+  HCICommand cmd = { .op_code.raw = CMD_BT_WRITE_LOCAL_NAME, .parameter_length = sizeof(params), .parameters = params };
 
   HCIError status = HCI_send_command(&cmd);
   if (status != HCI_ERROR_SUCCESS) {
@@ -765,9 +739,7 @@ HCIError HCI_bcm4345_load_firmware(void) {
   const uint32_t CHUNK_DELAY_MS = 1;
   const uint32_t FIRMWARE_BOOT_DELAY_MS = 250;
 
-  HCICommand cmd = { .op_code.raw = CMD_BROADCOM_DOWNLOAD_MINIDRIVER,
-                     .parameter_length = 0,
-                     .parameters = NULL };
+  HCICommand cmd = { .op_code.raw = CMD_BROADCOM_DOWNLOAD_MINIDRIVER, .parameter_length = 0, .parameters = NULL };
 
   // Send minidriver and wait for response
   HCIError status = HCI_send_command(&cmd);
@@ -834,9 +806,7 @@ HCIError HCI_bcm4345_set_baudrate(uint32_t baudrate) {
   params[4] = 0x00;
   params[5] = 0x00;
 
-  HCICommand cmd = { .op_code.raw = CMD_BROADCOM_UPDATE_BAUDRATE,
-                     .parameter_length = 6,
-                     .parameters = params };
+  HCICommand cmd = { .op_code.raw = CMD_BROADCOM_UPDATE_BAUDRATE, .parameter_length = 6, .parameters = params };
 
   HCIError status = HCI_send_command(&cmd);
   if (status != HCI_ERROR_SUCCESS) {
@@ -856,9 +826,7 @@ HCIError HCI_get_module_status(BCM4345C0Info *info) {
     return HCI_ERROR_INVALID_PARAMETERS;
   }
 
-  HCICommand cmd = { .op_code.raw = CMD_BT_READ_LOCAL_VERSION_INFORMATION,
-                     .parameter_length = 0,
-                     .parameters = NULL };
+  HCICommand cmd = { .op_code.raw = CMD_BT_READ_LOCAL_VERSION_INFORMATION, .parameter_length = 0, .parameters = NULL };
 
   HCIError status = HCI_send_command(&cmd);
   if (status != HCI_ERROR_SUCCESS) {
@@ -902,9 +870,7 @@ HCIError HCI_set_bt_addr(uint8_t *bt_addr) {
     reversed_bt_addr[i] = bt_addr[5 - i];
   }
 
-  HCICommand cmd = { .op_code.raw = CMD_BROADCOM_WRITE_BD_ADDR,
-                     .parameter_length = 6,
-                     .parameters = reversed_bt_addr };
+  HCICommand cmd = { .op_code.raw = CMD_BROADCOM_WRITE_BD_ADDR, .parameter_length = 6, .parameters = reversed_bt_addr };
 
   HCIError status = HCI_send_command(&cmd);
   if (status != HCI_ERROR_SUCCESS) {
@@ -920,9 +886,7 @@ HCIError HCI_get_bt_addr(uint8_t *bt_addr) {
     return HCI_ERROR_INVALID_PARAMETERS;
   }
 
-  HCICommand cmd = { .op_code.raw = CMD_BT_READ_BD_ADDR,
-                     .parameter_length = 0,
-                     .parameters = NULL };
+  HCICommand cmd = { .op_code.raw = CMD_BT_READ_BD_ADDR, .parameter_length = 0, .parameters = NULL };
 
   HCIError status = HCI_send_command(&cmd);
   if (status != HCI_ERROR_SUCCESS) {
