@@ -3,11 +3,15 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define MAX_SERVICES 10
-#define MAX_CHARACTERISTICS_PER_SERVICE 10
-#define MAX_CONNECTIONS 1
-#define ATT_MTU_DEFAULT 23
-#define ATT_MTU_MAX 512
+#define MAX_SERVICES 10                    /**< Maximum number of services that can be registered */
+#define MAX_CHARACTERISTICS_PER_SERVICE 10 /**< Maximum number of characteristics per service */
+#define MAX_CONNECTIONS 1                  /**< Maximum number of BLE connections */
+
+/** Default MTU size for ATT protocol */
+#define ATT_DEFAULT_MTU 23
+
+/** Maximum supported MTU size */
+#define ATT_MAX_MTU 517
 
 typedef enum {
   GAP_ERROR_SUCCESS,

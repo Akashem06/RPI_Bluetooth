@@ -72,6 +72,12 @@ typedef struct {
 } BCM4345C0Info;
 
 /**
+ * @brief   Wait for HCI response to occur
+ * @details Simple synchronization with boolean flag
+ */
+void HCI_wait_response();
+
+/**
  * @brief   Initialize the Host Controller Interface (HCI) layer
  * @return  HCIError Indicates the result of the initialization process
  */
@@ -140,23 +146,6 @@ HCIError HCI_BLE_set_advertising_param(uint16_t adv_interval_min, uint16_t adv_i
                                        Adv_OwnAddressType own_address_type, Adv_DirectAddressType direct_address_type,
                                        uint8_t *direct_address, Adv_ChannelMap adv_channel_map,
                                        Adv_FilterPolicy adv_filter_policy);
-
-/**
- * @brief   Set the advertising data for BLE advertisements
- * @param   adv_data Pointer to the advertising data buffer
- * @param   adv_data_len Length of the advertising data
- * @return  HCIError Indicates the success or failure of setting advertising data
- * @details Configures the payload that will be broadcasted during BLE advertising
- */
-HCIError HCI_BLE_set_advertising_data(uint8_t *adv_data, uint8_t adv_data_len);
-
-/**
- * @brief   Enable or disable BLE advertising
- * @param   enable Boolean flag to turn advertising on or off
- * @return  HCIError Indicates the success or failure of changing advertising state
- * @details Starts or stops the BLE advertisement process
- */
-HCIError HCI_BLE_set_advertising_enable(bool enable);
 
 /**
  * @brief   Configure BLE scanning parameters
@@ -230,14 +219,6 @@ HCIError HCI_disconnect(uint16_t connection_handle, Conn_DisconnectReason reason
  * @details Configures which Bluetooth Low Energy events will generate notifications
  */
 HCIError HCI_BLE_set_event_mask(uint8_t mask);
-
-/**
- * @brief   Set the local Bluetooth device name
- * @param   name Null-terminated string containing the device name
- * @return  HCIError Indicates the success or failure of setting the name
- * @details Configures the human-readable name for the local Bluetooth device
- */
-HCIError HCI_set_local_name(const char *name);
 
 /**
  * @brief   Handle incoming asynchronous data

@@ -28,7 +28,7 @@ size_t bcm4345c0_fw_size = (size_t)(&_binary_BCM4345C0_hcd_size);
  * Helper function
  **************************************************************************************/
 
-static void wait_hci_response() {
+void HCI_wait_response() {
   waiting_response = true;
   while (waiting_response) {
   }
@@ -487,39 +487,7 @@ HCIError HCI_BLE_set_advertising_param(uint16_t adv_interval_min, uint16_t adv_i
     return status;
   }
 
-  wait_hci_response();
-  return status;
-}
-
-HCIError HCI_BLE_set_advertising_data(uint8_t *adv_data, uint8_t adv_data_len) {
-  /* Data goes out of scope when function returns unless declared as a static variable. */
-  static uint8_t data[32] = { 0 };
-  data[0] = adv_data_len;
-  memcpy(&data[1], adv_data, adv_data_len);
-
-  HCICommand cmd = { .op_code.raw = CMD_BLE_SET_ADVERTISING_DATA, .parameter_length = sizeof(data), .parameters = data };
-
-  HCIError status = HCI_send_command(&cmd);
-  if (status != HCI_ERROR_SUCCESS) {
-    return status;
-  }
-
-  wait_hci_response();
-  return status;
-}
-
-HCIError HCI_BLE_set_advertising_enable(bool enable) {
-  uint8_t enable_val = enable ? 1U : 0U;
-  HCICommand adv_enable_cmd = { .op_code.raw = CMD_BLE_SET_ADVERTISE_ENABLE,
-                                .parameter_length = 1,
-                                .parameters = (uint8_t *){ &enable_val } };
-
-  HCIError status = HCI_send_command(&adv_enable_cmd);
-  if (status != HCI_ERROR_SUCCESS) {
-    return status;
-  }
-
-  wait_hci_response();
+  HCI_wait_response();
   return status;
 }
 
@@ -549,7 +517,7 @@ HCIError HCI_BLE_set_scan_parameters(Scan_Type scan_type, uint16_t scan_interval
     return status;
   }
 
-  wait_hci_response();
+  HCI_wait_response();
   return status;
 }
 
@@ -565,7 +533,7 @@ HCIError HCI_BLE_set_scan_enable(bool enable, bool filter_duplicates) {
     return status;
   }
 
-  wait_hci_response();
+  HCI_wait_response();
   return status;
 }
 
@@ -619,7 +587,7 @@ HCIError HCI_BLE_create_connection(uint16_t scan_interval_ms, uint16_t scan_wind
     return status;
   }
 
-  wait_hci_response();
+  HCI_wait_response();
   return status;
 }
 
@@ -653,7 +621,7 @@ HCIError HCI_BLE_connection_update(uint16_t connection_handle, uint16_t conn_int
     return status;
   }
 
-  wait_hci_response();
+  HCI_wait_response();
   return status;
 }
 
@@ -670,7 +638,7 @@ HCIError HCI_disconnect(uint16_t connection_handle, Conn_DisconnectReason reason
     return status;
   }
 
-  wait_hci_response();
+  HCI_wait_response();
   return status;
 }
 
@@ -688,46 +656,7 @@ HCIError HCI_BLE_set_event_mask(uint8_t mask) {
     return status;
   }
 
-  wait_hci_response();
-  return status;
-}
-
-/***************************************************************************************
- * Set name
- **************************************************************************************/
-
-HCIError HCI_set_local_name(const char *name) {
-  static uint8_t params[248] = { 0 };
-
-  size_t name_len = 0;
-  while (name[name_len] != 0 && name_len < sizeof(params)) {
-    name_len++;
-  }
-
-  memcpy(params, name, name_len);
-  memset(params + name_len, 0U, 248 - name_len);
-
-  HCICommand cmd = { .op_code.raw = CMD_BT_WRITE_LOCAL_NAME, .parameter_length = sizeof(params), .parameters = params };
-
-  HCIError status = HCI_send_command(&cmd);
-  if (status != HCI_ERROR_SUCCESS) {
-    return status;
-  }
-
-  wait_hci_response();
-
-  static uint8_t adv_data[31] = { 0 };
-  adv_data[0] = 2;     // Length of flags field
-  adv_data[1] = 0x01;  // Flags type
-  adv_data[2] = 0x06;  // Flags value
-
-  adv_data[3] = name_len + 1;  // Length of name field + type byte
-  adv_data[4] = 0x09;          // Complete Local Name type
-  memcpy(&adv_data[5], name, name_len);
-
-  uint8_t total_len = 5 + name_len;
-  status = HCI_BLE_set_advertising_data(adv_data, total_len);
-
+  HCI_wait_response();
   return status;
 }
 
@@ -747,7 +676,7 @@ HCIError HCI_bcm4345_load_firmware(void) {
     return status;
   }
 
-  wait_hci_response();
+  HCI_wait_response();
 
   hw_delay_ms(100);  // Give chip time to process minidriver
 
@@ -786,7 +715,7 @@ HCIError HCI_bcm4345_load_firmware(void) {
       return status;
     }
 
-    wait_hci_response();
+    HCI_wait_response();
 
     bcm4345c0_fw_ptr += fw_parameter_length;
     hw_delay_ms(CHUNK_DELAY_MS);
@@ -813,7 +742,7 @@ HCIError HCI_bcm4345_set_baudrate(uint32_t baudrate) {
     return status;
   }
 
-  wait_hci_response();
+  HCI_wait_response();
   return status;
 }
 
@@ -833,7 +762,7 @@ HCIError HCI_get_module_status(BCM4345C0Info *info) {
     return status;
   }
 
-  wait_hci_response();
+  HCI_wait_response();
 
   info->hci_version = rx_buffer[7];
   info->hci_revision = rx_buffer[8] | (rx_buffer[9] << 8);
@@ -877,7 +806,7 @@ HCIError HCI_set_bt_addr(uint8_t *bt_addr) {
     return status;
   }
 
-  wait_hci_response();
+  HCI_wait_response();
   return status;
 }
 
@@ -893,7 +822,7 @@ HCIError HCI_get_bt_addr(uint8_t *bt_addr) {
     return status;
   }
 
-  wait_hci_response();
+  HCI_wait_response();
 
   memcpy(bt_addr, &rx_buffer[7], sizeof(bt_addr));
 

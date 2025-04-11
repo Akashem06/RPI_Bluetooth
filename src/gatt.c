@@ -49,6 +49,12 @@ GATTError GATT_init(void) {
 }
 
 GATTError GATT_deinit(void) {
+  for (uint8_t i = 0; i < MAX_SERVICES; i++) {
+    memzero((uint64_t)&gatt_services[i], sizeof(GATTService));
+  }
+
+  gatt_event_callback = NULL;
+
   return GATT_ERROR_SUCCESS;
 }
 
@@ -184,7 +190,7 @@ GATTError GATT_send_notification(uint16_t connection_handle, uint16_t char_handl
     return GATT_ERROR_REQUEST_NOT_SUPPORTED;
   }
 
-  uint8_t packet[MAX_VALUE_LENGTH + 3];
+  static uint8_t packet[MAX_VALUE_LENGTH + 3];
   packet[0] = ATT_HANDLE_VALUE_NOTIFICATION;
   packet[1] = char_handle & 0xFFU;
   packet[2] = (char_handle >> 8U) & 0xFFU;
@@ -212,7 +218,7 @@ GATTError GATT_send_indication(uint16_t connection_handle, uint16_t char_handle,
     return GATT_ERROR_REQUEST_NOT_SUPPORTED;
   }
 
-  uint8_t packet[MAX_VALUE_LENGTH + 3];
+  static uint8_t packet[MAX_VALUE_LENGTH + 3];
   packet[0] = ATT_HANDLE_VALUE_INDICATION;
   packet[1] = char_handle & 0xFFU;
   packet[2] = (char_handle >> 8U) & 0xFFU;
@@ -226,7 +232,7 @@ GATTError GATT_send_indication(uint16_t connection_handle, uint16_t char_handle,
 }
 
 GATTError GATT_discover_services(uint16_t connection_handle) {
-  uint8_t packet[7];
+  static uint8_t packet[7];
 
   /* https://community.nxp.com/t5/Wireless-MCU/Bluetooth-Low-Energy-How-to-discover-all-Primary-Services-on-a/m-p/378974 */
   packet[0] = ATT_READ_BY_GROUP_TYPE_REQUEST;
@@ -249,7 +255,7 @@ GATTError GATT_discover_services(uint16_t connection_handle) {
 }
 
 GATTError GATT_discover_characteristics(uint16_t connection_handle, uint16_t start_handle, uint16_t end_handle) {
-  uint8_t packet[7];
+  static uint8_t packet[7];
 
   packet[0] = ATT_READ_BY_TYPE_REQUEST;
   packet[1] = start_handle & 0xFFU;         /* Start handle lower byte */
@@ -298,7 +304,7 @@ GATTError GATT_subscribe_characteristic(uint16_t connection_handle, uint16_t cha
     return GATT_ERROR_INVALID_PARAMETER;
   }
 
-  uint8_t packet[5];
+  static uint8_t packet[5];
   packet[0] = ATT_WRITE_REQUEST;
   packet[1] = cccd_handle & 0xFFU;
   packet[2] = (cccd_handle >> 8U) & 0xFFU;
@@ -331,7 +337,7 @@ GATTError GATT_unsubscribe_characteristic(uint16_t connection_handle, uint16_t c
   uint16_t cccd_handle = char_handle + 2;
   uint8_t cccd_value[2] = { 0U, 0U };
 
-  uint8_t packet[5];
+  static uint8_t packet[5];
   packet[0] = ATT_WRITE_REQUEST;
   packet[1] = cccd_handle & 0xFFU;
   packet[2] = (cccd_handle >> 8U) & 0xFFU;
@@ -360,7 +366,7 @@ GATTError GATT_read_characteristic(uint16_t connection_handle, uint16_t char_han
     return GATT_ERROR_REQUEST_NOT_SUPPORTED;
   }
 
-  uint8_t packet[3];
+  static uint8_t packet[3];
   packet[0] = ATT_READ_REQUEST;
   packet[1] = char_handle & 0xFF;
   packet[2] = (char_handle >> 8) & 0xFF;
@@ -391,7 +397,7 @@ GATTError GATT_write_characteristic(uint16_t connection_handle, uint16_t char_ha
     return GATT_ERROR_REQUEST_NOT_SUPPORTED;
   }
 
-  uint8_t packet[MAX_VALUE_LENGTH];
+  static uint8_t packet[MAX_VALUE_LENGTH];
   packet[0] = ATT_WRITE_REQUEST;
   packet[1] = char_handle & 0xFFU;
   packet[2] = (char_handle >> 8U) & 0xFFU;
@@ -409,7 +415,7 @@ GATTError GATT_write_characteristic(uint16_t connection_handle, uint16_t char_ha
 }
 
 GATTError GATT_read_descriptor(uint16_t connection_handle, uint16_t desc_handle) {
-  uint8_t packet[3];
+  static uint8_t packet[3];
   packet[0] = ATT_READ_REQUEST;
   packet[1] = desc_handle & 0xFFU;
   packet[2] = (desc_handle >> 8U) & 0xFFU;
@@ -430,7 +436,7 @@ GATTError GATT_write_descriptor(uint16_t connection_handle, uint16_t desc_handle
     return GATT_ERROR_INVALID_PARAMETER;
   }
 
-  uint8_t packet[MAX_VALUE_LENGTH];
+  static uint8_t packet[MAX_VALUE_LENGTH];
   packet[0] = ATT_WRITE_REQUEST;
   packet[1] = desc_handle & 0xFFU;
   packet[2] = (desc_handle >> 8U) & 0xFFU;
@@ -452,7 +458,7 @@ GATTError GATT_exchange_mtu(uint16_t connection_handle, uint16_t client_mtu) {
     return GATT_ERROR_INVALID_PARAMETER;
   }
 
-  uint8_t packet[3];
+  static uint8_t packet[3];
   packet[0] = ATT_EXCHANGE_MTU_REQUEST;
   packet[1] = client_mtu & 0xFFU;
   packet[2] = (client_mtu >> 8U) & 0xFFU;

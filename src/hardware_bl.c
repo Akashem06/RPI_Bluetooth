@@ -15,7 +15,7 @@ UartSettings bt_settings = { .uart = UART0, .cts = 30, .rts = 31, .tx = 32, .rx 
 
 /* END USER DEFIEND VARIABLES */
 
-void handle_uart0_irq(void) {
+void __attribute__((weak)) handle_uart0_irq(void) {
   /* If RX interrupt. */
   if (bt_settings.uart->mis & ((1 << 4) | (1 << 6))) {
     bt_settings.uart->icr = (1 << 4) | (1 << 6);
